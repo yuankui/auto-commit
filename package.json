@@ -13,7 +13,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "prepublish": "npm run build",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "exit 0"
   },
   "repository": {
     "type": "git",
