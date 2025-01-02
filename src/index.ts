@@ -1,10 +1,14 @@
+#!/usr/bin/env node
+
 import { simpleGit } from 'simple-git';
 import { OpenAI } from 'openai';
 import inquirer from 'inquirer';
 import * as dotenv from 'dotenv';
+import path from 'path';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from the user's home directory
+const homeDir = process.env.HOME || process.env.USERPROFILE;
+dotenv.config({ path: path.join(homeDir!, '.auto-commit.env') });
 
 const git = simpleGit();
 const openai = new OpenAI({
@@ -51,8 +55,23 @@ async function commitChanges(message: string): Promise<void> {
   console.log('Changes committed successfully!');
 }
 
+async function checkEnvFile(): Promise<void> {
+  const envPath = path.join(homeDir!, '.auto-commit.env');
+  
+  if (!process.env.OPENAI_API_KEY) {
+    console.error(`Error: OpenAI API key not found.
+Please create ${envPath} with the following content:
+
+OPENAI_API_KEY=your_api_key_here`);
+    process.exit(1);
+  }
+}
+
 async function main() {
   try {
+    // Check for environment variables
+    await checkEnvFile();
+
     // Get the current diff
     const diff = await getDiff();
     if (!diff) {
