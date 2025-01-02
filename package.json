@@ -1,7 +1,7 @@
 {
-  "name": "auto-commit",
+  "name": "@yuankui/auto-commit",
   "version": "1.0.0",
-  "description": "TypeScript Node.js project",
+  "description": "AI-powered git commit message generator",
   "main": "dist/index.js",
   "bin": {
     "auto-commit": "./dist/index.js"
@@ -12,11 +12,37 @@
     "dev": "ts-node src/index.ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test": "echo \"No tests yet\" && exit 0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuankui/auto-commit.git"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "chatgpt",
+    "automation"
+  ],
+  "author": "yuankui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuankui/auto-commit/issues"
+  },
+  "homepage": "https://github.com/yuankui/auto-commit#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
@@ -26,9 +52,9 @@
     "typescript": "^5.3.0"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "inquirer": "^12.3.0",
-    "openai": "^4.77.0",
-    "simple-git": "^3.27.0"
+    "dotenv": "^16.3.1",
+    "inquirer": "^8.2.6",
+    "openai": "^4.24.1",
+    "simple-git": "^3.22.0"
   }
 }
