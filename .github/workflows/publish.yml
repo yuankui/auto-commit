@@ -48,14 +48,14 @@ jobs:
           VERSION="${{ github.event.inputs.version || 'patch' }}"
           npm version $VERSION -m "Bump version to %s [skip ci]"
 
-      - name: Push changes
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Push version and tags
         run: |
           git push
           git push --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
