@@ -48,8 +48,32 @@ jobs:
         id: current_version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
 
+      - name: Check npm registry
+        id: check_registry
+        run: |
+          PACKAGE_NAME="@yuankui/auto-commit"
+          CURRENT_VERSION="${{ steps.current_version.outputs.version }}"
+          VERSION_TYPE="${{ github.event.inputs.version || 'patch' }}"
+          
+          # Calculate next version
+          NEXT_VERSION=$(npm version $VERSION_TYPE --no-git-tag-version)
+          # Revert the version change in package.json
+          git checkout package.json package-lock.json
+          
+          # Check if version exists
+          if npm view "$PACKAGE_NAME@$NEXT_VERSION" version &> /dev/null; then
+            echo "Version $NEXT_VERSION already exists in npm registry"
+            echo "exists=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "Version $NEXT_VERSION is available"
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          fi
+
       - name: Bump version
         id: bump_version
+        if: steps.check_registry.outputs.exists != 'true'
         run: |
           VERSION="${{ github.event.inputs.version || 'patch' }}"
           npm version $VERSION -m "Bump version to %s [skip ci]"
@@ -58,16 +82,19 @@ jobs:
           echo " Bumping from ${{ steps.current_version.outputs.version }} to $NEW_VERSION"
 
       - name: Update run title
+        if: steps.check_registry.outputs.exists != 'true'
         run: |
           echo "title=Publishing v${{ steps.bump_version.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
           echo "::notice title=Version::Publishing v${{ steps.bump_version.outputs.new_version }}"
 
       - name: Publish to npm
+        if: steps.check_registry.outputs.exists != 'true'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Push version and tags
+        if: steps.check_registry.outputs.exists != 'true'
         run: |
           git push
           git push --tags
