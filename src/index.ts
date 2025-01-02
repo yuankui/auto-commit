@@ -51,13 +51,13 @@ async function selectCommitMessage(messages: string[]): Promise<string> {
 
 async function commitChanges(message: string): Promise<void> {
   await git.add('.');
-  await git.commit(message);
+  await git.raw(['commit', '-m', message, '--no-verify']);
   console.log('Changes committed successfully!');
 }
 
 async function checkEnvFile(): Promise<void> {
   const envPath = path.join(homeDir!, '.auto-commit.env');
-  
+
   if (!process.env.OPENAI_API_KEY) {
     console.error(`Error: OpenAI API key not found.
 Please create ${envPath} with the following content:
