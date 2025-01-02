@@ -16,7 +16,7 @@ const openai = new OpenAI({
 });
 
 async function getDiff(): Promise<string> {
-  const diff = await git.diff();
+  const diff = await git.diff(['--cached', '--no-ext-diff']);
   return diff;
 }
 
