@@ -12,9 +12,7 @@ const homeDir = process.env.HOME || process.env.USERPROFILE;
 dotenv.config({ path: path.join(homeDir!, '.auto-commit.env') });
 
 const git = simpleGit();
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai: OpenAI;
 
 async function getDiff(): Promise<string> {
   // Get all changes in one command
@@ -117,6 +115,11 @@ async function main() {
   try {
     // Check for environment variables
     await checkEnvFile();
+    
+    // Initialize OpenAI client after we ensure API key exists
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Get the current diff
     const diff = await getDiff();
