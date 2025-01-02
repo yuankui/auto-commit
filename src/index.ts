@@ -16,7 +16,8 @@ const openai = new OpenAI({
 });
 
 async function getDiff(): Promise<string> {
-  const diff = await git.diff(['--no-ext-diff']);
+  // Get all changes in one command
+  const diff = await git.diff(['--no-ext-diff', 'HEAD']);
   return diff;
 }
 
@@ -25,7 +26,7 @@ async function generateCommitMessages(diff: string): Promise<string[]> {
 
 ${diff}
 
-Provide only the commit messages, one per line, without any additional text or formatting.`;
+Provide only the commit messages, one per line, without any additional text or formatting or numbers.`;
 
   const completion = await openai.chat.completions.create({
     messages: [{ role: 'user', content: prompt }],
@@ -45,6 +46,8 @@ async function selectCommitMessage(messages: string[]): Promise<string> {
       choices: messages,
     },
   ]);
+
+  console.log(`Selected commit message: ${JSON.stringify(selectedMessage)}`);
 
   return selectedMessage;
 }
