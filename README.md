@@ -16,10 +16,12 @@ A TypeScript tool that helps generate commit messages using ChatGPT API.
 npm install -g @yuankui/auto-commit
 ```
 
-2. Create `~/.auto-commit.env` file in your home directory and add your OpenAI API key:
+2. Run the tool:
 ```bash
-echo "OPENAI_API_KEY=your_api_key_here" > ~/.auto-commit.env
+auto-commit
 ```
+
+On first run, you'll be prompted to enter your OpenAI API key. The key will be saved in `~/.auto-commit.env` for future use.
 
 ## Development Setup
 
